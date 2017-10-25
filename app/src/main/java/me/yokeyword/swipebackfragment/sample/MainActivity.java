@@ -2,6 +2,7 @@ package me.yokeyword.swipebackfragment.sample;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.View;
 import android.widget.Toast;
 
 import me.yokeyword.swipebackfragment.SwipeBackActivity;
@@ -24,6 +25,14 @@ public class MainActivity extends SwipeBackActivity implements BaseSwipeBackFrag
             Toast.makeText(MainActivity.this, "啊哦,app被强杀喽~", Toast.LENGTH_LONG).show();
         }
     }
+
+
+    public void btn(View view){
+            FirstSwipeBackFragment firstFragment = FirstSwipeBackFragment.newInstance();
+            loadFragment(firstFragment);
+    }
+
+
 
     /**
      * 限制SwipeBack的条件,默认栈内Fragment数 <= 1时 , 优先滑动退出Activity , 而不是Fragment

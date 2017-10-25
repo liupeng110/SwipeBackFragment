@@ -63,8 +63,8 @@ public class SwipeBackLayout extends FrameLayout {
 
     private static final int DEFAULT_SCRIM_COLOR = 0x99000000;
     private static final int FULL_ALPHA = 255;
-    private static final float DEFAULT_SCROLL_THRESHOLD = 0.4f;
-    private static final int OVERSCROLL_DISTANCE = 10;
+    private static final float DEFAULT_SCROLL_THRESHOLD = 0.55f;
+    private static final int OVERSCROLL_DISTANCE = 200;
 
     private float mScrollFinishThreshold = DEFAULT_SCROLL_THRESHOLD;
 
@@ -464,11 +464,9 @@ public class SwipeBackLayout extends FrameLayout {
 
             int left = 0, top = 0;
             if ((mCurrentSwipeOrientation & EDGE_LEFT) != 0) {
-                left = xvel > 0 || xvel == 0 && mScrollPercent > mScrollFinishThreshold ? (childWidth
-                        + mShadowLeft.getIntrinsicWidth() + OVERSCROLL_DISTANCE) : 0;
+                left = xvel > 0 || xvel == 0 && mScrollPercent > mScrollFinishThreshold ? (childWidth+ mShadowLeft.getIntrinsicWidth() + OVERSCROLL_DISTANCE) : 0;
             } else if ((mCurrentSwipeOrientation & EDGE_RIGHT) != 0) {
-                left = xvel < 0 || xvel == 0 && mScrollPercent > mScrollFinishThreshold ? -(childWidth
-                        + mShadowRight.getIntrinsicWidth() + OVERSCROLL_DISTANCE) : 0;
+                left = xvel < 0 || xvel == 0 && mScrollPercent > mScrollFinishThreshold ? -(childWidth+ mShadowRight.getIntrinsicWidth() + OVERSCROLL_DISTANCE) : 0;
             }
 
             mHelper.settleCapturedViewAt(left, top);
