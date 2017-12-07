@@ -13,20 +13,15 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 
-/**
- * SwipeBackFragment
- * Created by YoKeyword on 16/4/19.
- */
 public class SwipeBackFragment extends Fragment {
-    private static final String SWIPEBACKFRAGMENT_STATE_SAVE_IS_HIDDEN = "SWIPEBACKFRAGMENT_STATE_SAVE_IS_HIDDEN";
+    private static final String SWIPEBACKFRAGMENT_STATE_SAVE_OR_HIDDEN = "SWIPEBACKFRAGMENT_STATE_SAVE_OR_HIDDEN";
     private SwipeBackLayout mSwipeBackLayout;
     private Animation mNoAnim;
     boolean mLocking = false;
 
     protected Activity _mActivity;
 
-    @Override
-    public void onAttach(Activity activity) {
+    @Override public void onAttach(Activity activity) {
         super.onAttach(activity);
         _mActivity = activity;
     }
@@ -35,8 +30,8 @@ public class SwipeBackFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null) {
-            boolean isSupportHidden = savedInstanceState.getBoolean(SWIPEBACKFRAGMENT_STATE_SAVE_IS_HIDDEN);
+        if (savedInstanceState != null) {//保存状态
+            boolean isSupportHidden = savedInstanceState.getBoolean(SWIPEBACKFRAGMENT_STATE_SAVE_OR_HIDDEN);
 
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             if (isSupportHidden) {
@@ -47,25 +42,25 @@ public class SwipeBackFragment extends Fragment {
             ft.commit();
         }
 
-        mNoAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.no_anim);
+        mNoAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.no_anim);//加载自定义动画
         onFragmentCreate();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(SWIPEBACKFRAGMENT_STATE_SAVE_IS_HIDDEN, isHidden());
-    }
+        outState.putBoolean(SWIPEBACKFRAGMENT_STATE_SAVE_OR_HIDDEN, isHidden());
+    }//保存状态
 
     private void onFragmentCreate() {
         mSwipeBackLayout = new SwipeBackLayout(getActivity());
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mSwipeBackLayout.setLayoutParams(params);
         mSwipeBackLayout.setBackgroundColor(Color.TRANSPARENT);
-    }
+    }//创建一个外层布局
 
     protected View attachToSwipeBack(View view) {
-        mSwipeBackLayout.attachToFragment(this, view);
+        mSwipeBackLayout.attachToFragment(this, view);//第一个参数为fragment,第二个参数view为整个布局
         return mSwipeBackLayout;
     }
 
