@@ -1,6 +1,7 @@
 package me.yokeyword.swipebackfragment.sample.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.yokeyword.swipebackfragment.SwipeBackLayout;
 import me.yokeyword.swipebackfragment.sample.BaseSwipeBackFragment;
 import me.yokeyword.swipebackfragment.sample.PagerAdapter;
 import me.yokeyword.swipebackfragment.sample.R;
@@ -66,4 +68,5 @@ public class RecyclerSwipeBackFragment extends BaseSwipeBackFragment {
         }
         mAdapter.setDatas(items);
     }
+
 }

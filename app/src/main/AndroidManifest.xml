@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="me.yokeyword.swipebackfragment.sample"
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    package="me.yokeyword.swipebackfragment.sample"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
@@ -8,7 +9,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:debuggable="true"
-        android:theme="@style/AppTheme.NoActionBar.SwipeBack">
+        android:theme="@style/AppTheme.NoActionBar.SwipeBack"
+        tools:ignore="HardcodedDebugMode">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

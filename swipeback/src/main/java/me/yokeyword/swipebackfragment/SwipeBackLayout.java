@@ -27,47 +27,43 @@ import java.util.List;
 
 
 public class SwipeBackLayout extends FrameLayout {
-    public static final int EDGE_LEFT = ViewDragHelper.EDGE_LEFT;
+
+    public static final int EDGE_LEFT = ViewDragHelper.EDGE_LEFT;       //边缘
     public static final int EDGE_RIGHT = ViewDragHelper.EDGE_RIGHT;
     public static final int EDGE_ALL = EDGE_LEFT | EDGE_RIGHT;
-    public static final int STATE_IDLE = ViewDragHelper.STATE_IDLE;
-    public static final int STATE_DRAGGING = ViewDragHelper.STATE_DRAGGING;
-    //目前，由于一次性或预定义的非交互式动作，视图正在解决。
-    public static final int STATE_SETTLING = ViewDragHelper.STATE_SETTLING;
+
+    public static final int STATE_IDLE = ViewDragHelper.STATE_IDLE;                         //空闲状态
+    public static final int STATE_DRAGGING = ViewDragHelper.STATE_DRAGGING; //拖动状态
+    public static final int STATE_SETTLING = ViewDragHelper.STATE_SETTLING;       //状态 设置中
 
     private static final int DEFAULT_SCRIM_COLOR = 0x99000000;  //默认遮罩层  颜色
-    private static final int FULL_ALPHA = 255;
-    private static final float DEFAULT_SCROLL_THRESHOLD = 0.75f;//默认滑动阈值
-    private static final int OVERSCROLL_DISTANCE = 200;                //反弹时距离
+    private static final int FULL_ALPHA = 255;                                      //不透明度
+    private static final float DEFAULT_SCROLL_THRESHOLD = 0.75f; //默认滑动阈值
+    private static final int OVERSCROLL_DISTANCE = 2;                     //反弹时距离
 
-    private float mScrollFinishThreshold = DEFAULT_SCROLL_THRESHOLD;
+    private float mScrollFinishThreshold = DEFAULT_SCROLL_THRESHOLD;    //滚动完成的阈值    默认屏幕宽的0.75
+    private ViewDragHelper mHelper;                                                                  //触摸封装事件
+    private float mScrollPercent;                                                                           //滚动百分比
+    private float mScrimOpacity;                                                                          //遮罩层 不透明度
 
-    private ViewDragHelper mHelper;
+    private FragmentActivity mActivity;                                                              //当前的activity
+    private View mContentView;                                                                           //内容视图
+    private SwipeBackFragment mFragment;                                                     //当前的fragment
+    private Fragment mPreFragment;                                                                 //之前的fragment
 
-    private float mScrollPercent;
-    private float mScrimOpacity;
+    private Drawable mShadowLeft;                                                                   //左边的阴影   图
+    private Drawable mShadowRight;                                                                 //右边的阴影  图
+    private Rect mTmpRect = new Rect();                                                          //矩形  绘制使用
 
-    private FragmentActivity mActivity;
-    private View mContentView;
-    private SwipeBackFragment mFragment;
-    private Fragment mPreFragment;
-
-    private Drawable mShadowLeft;
-    private Drawable mShadowRight;
-    private Rect mTmpRect = new Rect();
-
-    private int mEdgeFlag;
-    private boolean mEnable = true;
-    private int mCurrentSwipeOrientation;
+    private int mEdgeFlag;                                                                                  //边界标识   left/right/all
+    private boolean mEnable = true;                                                                 //是否可以滑动
+    private int mCurrentSwipeOrientation;                                                      //当前滑动方向
 
     private Context context;
-    private EdgeLevel edgeLevel;
+    private EdgeLevel edgeLevel;                                                                      //边缘等级
 
-    public enum EdgeLevel {
-        MAX, MIN, MED
-    }
-
-    private List<OnSwipeListener> mListeners;//要通过发送事件的听众的集合。
+    public enum EdgeLevel { MAX, MIN, MED  }//中等
+    private List<OnSwipeListener> mListeners;//要通过发送事件的监听器 的集合
 
     public SwipeBackLayout(Context context) {
         this(context, null);
@@ -81,10 +77,10 @@ public class SwipeBackLayout extends FrameLayout {
         init();
     }
 
-    private void init() {
+    private void init() {//初始化 阴影与方向
         mHelper = ViewDragHelper.create(this, new ViewDragCallback());
         setShadow(R.drawable.shadow_left, EDGE_LEFT);
-        setEdgeOrientation(EDGE_LEFT);
+        setEdgeOrientation(EDGE_ALL);
     }
 
     public void setScrollThresHold(float threshold) {
@@ -146,7 +142,7 @@ public class SwipeBackLayout extends FrameLayout {
         } else if ((edgeFlag & EDGE_RIGHT) != 0) {
             mShadowRight = shadow;
         }
-        invalidate();
+        invalidate();//进行刷新
     }
     public void setShadow(int resId, int edgeFlag) {
         setShadow(getResources().getDrawable(resId), edgeFlag);
@@ -166,20 +162,22 @@ public class SwipeBackLayout extends FrameLayout {
     }//从一组侦听器中移除一个侦听器
 
     public interface OnSwipeListener {
-        void onDragStateChange(int state);                 //状态改变时调用   STATE_IDLE/STATE_DRAGGING/STATE_SETTLING
-        void onEdgeTouch(int oritentationEdgeFlag);//触摸边缘时调用
-        void onDragScrolled(float scrollPercent);         //当第一次滚动百分比超过阈值时调用
-    }
+        void onDragStateChange(int state);                 //状态改变时 回调此函数    STATE_IDLE/STATE_DRAGGING/空闲 拖动等
+        void onEdgeTouch(int oritentationEdgeFlag);//触摸边缘时 回调此函数
+        void onDragScrolled(float scrollPercent);         //当第一次滚动百分比超过阈值时 回调此函数
+    }// 供外部使用的一些回调
+
+    //进行绘制---------------
     @Override protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        Log.i("app中","在drawChild----"+child);
+//        Log.i("app中","在drawChild----"+child);
         boolean isDrawView = child == mContentView;
         boolean drawChild = super.drawChild(canvas, child, drawingTime);
         if (isDrawView && mScrimOpacity > 0 && mHelper.getViewDragState() != ViewDragHelper.STATE_IDLE) {
-            drawShadow(canvas, child);
-            drawScrim(canvas, child);
+            drawShadow(canvas, child);//阴影和遮罩层
+//            drawScrim(canvas, child); //
         }
         return drawChild;
-    }
+    }//绘制 子布局和阴影等
     private void drawShadow(Canvas canvas, View child) {
         final Rect childRect = mTmpRect;
         child.getHitRect(childRect);
@@ -193,7 +191,7 @@ public class SwipeBackLayout extends FrameLayout {
             mShadowRight.setAlpha((int) (mScrimOpacity * FULL_ALPHA));
             mShadowRight.draw(canvas);
         }
-    }
+    }//绘制阴影
     private void drawScrim(Canvas canvas, View child) {
         final int baseAlpha = (DEFAULT_SCRIM_COLOR & 0xff000000) >>> 24;
         final int alpha = (int) (baseAlpha * mScrimOpacity);
@@ -205,13 +203,15 @@ public class SwipeBackLayout extends FrameLayout {
             canvas.clipRect(child.getRight(), 0, getRight(), getHeight());
         }
         canvas.drawColor(color);
-    }
-    @Override public void computeScroll() {
+    }    //绘制遮罩层
+    //进行绘制
+
+    @Override public void computeScroll() {  //通过draw调用
         mScrimOpacity = 1 - mScrollPercent;
         if (mScrimOpacity >= 0) {
-            if (mHelper.continueSettling(true)) {
+            if (mHelper.continueSettling(false)) {
                 ViewCompat.postInvalidateOnAnimation(this);
-            }
+            }//自动滚动
         }
     }
     public void setFragment(SwipeBackFragment fragment, View view) {
@@ -256,15 +256,16 @@ public class SwipeBackLayout extends FrameLayout {
 
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            boolean dragEnable = mHelper.isEdgeTouched(mEdgeFlag, pointerId);
+//            boolean dragEnable = mHelper.isEdgeTouched(mEdgeFlag, pointerId);
+            boolean dragEnable =true;
             Log.i("app中","在 tryCaptureView ----"+dragEnable);
             if (dragEnable) {
-                if (mHelper.isEdgeTouched(EDGE_LEFT, pointerId)) {
-                    mCurrentSwipeOrientation = EDGE_LEFT;
-                } else if (mHelper.isEdgeTouched(EDGE_RIGHT, pointerId)) {
-                    mCurrentSwipeOrientation = EDGE_RIGHT;
-                }
-
+//                if (mHelper.isEdgeTouched(EDGE_LEFT, pointerId)) {
+//                    mCurrentSwipeOrientation = EDGE_LEFT;
+//                } else if (mHelper.isEdgeTouched(EDGE_RIGHT, pointerId)) {
+//                    mCurrentSwipeOrientation = EDGE_RIGHT;
+//                }
+                mCurrentSwipeOrientation= EDGE_ALL;
                 if (mListeners != null && !mListeners.isEmpty()) {
                     for (OnSwipeListener listener : mListeners) {
                         listener.onEdgeTouch(mCurrentSwipeOrientation);

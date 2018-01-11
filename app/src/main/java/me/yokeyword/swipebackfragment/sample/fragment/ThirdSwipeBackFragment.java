@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import me.yokeyword.swipebackfragment.L;
 import me.yokeyword.swipebackfragment.SwipeBackLayout;
 import me.yokeyword.swipebackfragment.sample.BaseSwipeBackFragment;
 import me.yokeyword.swipebackfragment.sample.R;
@@ -23,7 +24,7 @@ public class ThirdSwipeBackFragment extends BaseSwipeBackFragment {
     private Toolbar mToolbar;
 
     public static ThirdSwipeBackFragment newInstance() {
-
+        L.i("app中  进入 ThirdSwipeBackFragment 的 newInstance()");
         Bundle args = new Bundle();
 
         ThirdSwipeBackFragment fragment = new ThirdSwipeBackFragment();
@@ -36,7 +37,7 @@ public class ThirdSwipeBackFragment extends BaseSwipeBackFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_swipe_back_third, container, false);
-
+        L.i("app中  进入 ThirdSwipeBackFragment 的 onCreateView()");
         initToolbar(view);
         view.findViewById(R.id.tv_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +48,7 @@ public class ThirdSwipeBackFragment extends BaseSwipeBackFragment {
             }
         });
 
-        return attachToSwipeBack(view);
+        return attachToSwipeBack(view);//包裹最外层
     }
 
     private void initToolbar(View view) {
@@ -85,4 +86,5 @@ public class ThirdSwipeBackFragment extends BaseSwipeBackFragment {
             }
         });
     }
+
 }

@@ -21,15 +21,17 @@ public class SwipeBackFragment extends Fragment {
 
     protected Activity _mActivity;
 
-    @Override public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        _mActivity = activity;
-    }
+//    @Override public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//        L.i("app中  进入主Activity的 onCreate()");
+////        _mActivity = activity;
+//    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        L.i("app中  进入主Activity的 onCreate()-----0");
+        _mActivity = getActivity();
         if (savedInstanceState != null) {//保存状态
             boolean isSupportHidden = savedInstanceState.getBoolean(SWIPEBACKFRAGMENT_STATE_SAVE_OR_HIDDEN);
 
@@ -43,61 +45,60 @@ public class SwipeBackFragment extends Fragment {
         }
 
         mNoAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.no_anim);//加载自定义动画
-        onFragmentCreate();
-    }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(SWIPEBACKFRAGMENT_STATE_SAVE_OR_HIDDEN, isHidden());
-    }//保存状态
-
-    private void onFragmentCreate() {
-        mSwipeBackLayout = new SwipeBackLayout(getActivity());
+        mSwipeBackLayout = new SwipeBackLayout(getActivity());                           //创建最外层布局
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mSwipeBackLayout.setLayoutParams(params);
         mSwipeBackLayout.setBackgroundColor(Color.TRANSPARENT);
-    }//创建一个外层布局
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {    //023678
+        super.onSaveInstanceState(outState);
+        L.i("app中  进入主Activity的 onSaveInstanceState()-----1");
+        outState.putBoolean(SWIPEBACKFRAGMENT_STATE_SAVE_OR_HIDDEN, isHidden());
+    }//保存状态
+
+
 
     protected View attachToSwipeBack(View view) {
+        L.i("app中  进入主Activity的 attachToSwipeBack()-----3");
         mSwipeBackLayout.attachToFragment(this, view);//第一个参数为fragment,第二个参数view为整个布局
         return mSwipeBackLayout;
     }
 
+    //子类 调用
     protected View attachToSwipeBack(View view, SwipeBackLayout.EdgeLevel edgeLevel) {
+        L.i("app中  进入主Activity的 attachToSwipeBack2()-----4");
         mSwipeBackLayout.attachToFragment(this, view);
         mSwipeBackLayout.setEdgeLevel(edgeLevel);
         return mSwipeBackLayout;
     }
-
     protected void setEdgeLevel(SwipeBackLayout.EdgeLevel edgeLevel) {
         mSwipeBackLayout.setEdgeLevel(edgeLevel);
     }
-
     protected void setEdgeLevel(int widthPixel) {
         mSwipeBackLayout.setEdgeLevel(widthPixel);
     }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
+    @Override  public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+        L.i("app中  进入主Activity的 onHiddenChanged()-----5");
         if (hidden && mSwipeBackLayout != null) {
             mSwipeBackLayout.hiddenFragment();
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        L.i("app中  进入主Activity的 onActivityCreated()-----6");
         View view = getView();
         initFragmentBackground(view);
         if (view != null) {
             view.setClickable(true);
         }
     }
-
     private void initFragmentBackground(View view) {
+        L.i("app中  进入主Activity的 initFragmentBackground()-----7");
         if (view instanceof SwipeBackLayout) {
             View childView = ((SwipeBackLayout) view).getChildAt(0);
             setBackground(childView);
@@ -107,6 +108,7 @@ public class SwipeBackFragment extends Fragment {
     }
 
     private void setBackground(View view) {
+        L.i("app中  进入主Activity的 setBackground()-----8");
         if (view != null && view.getBackground() == null) {
             int defaultBg = 0;
             if (_mActivity instanceof SwipeBackActivity) {
@@ -120,16 +122,14 @@ public class SwipeBackFragment extends Fragment {
             }
         }
     }
-
-    @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+    @Override public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         if (mLocking) {
             return mNoAnim;
         }
         return super.onCreateAnimation(transit, enter, nextAnim);
-    }
-
+    }//动画
     protected int getWindowBackground() {
+        L.i("app中  进入主Activity的 getWindowBackground()-----9");
         TypedArray a = getActivity().getTheme().obtainStyledAttributes(new int[]{
                 android.R.attr.windowBackground
         });
@@ -137,11 +137,9 @@ public class SwipeBackFragment extends Fragment {
         a.recycle();
         return background;
     }
-
     public SwipeBackLayout getSwipeBackLayout() {
         return mSwipeBackLayout;
     }
-
     public void setSwipeBackEnable(boolean enable) {
         mSwipeBackLayout.setEnableGesture(enable);
     }

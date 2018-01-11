@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import me.yokeyword.swipebackfragment.L;
+import me.yokeyword.swipebackfragment.SwipeBackLayout;
 import me.yokeyword.swipebackfragment.sample.BaseSwipeBackFragment;
 import me.yokeyword.swipebackfragment.sample.R;
 
@@ -18,7 +20,7 @@ public class FirstSwipeBackFragment extends BaseSwipeBackFragment {
     private Toolbar mToolbar;
 
     public static FirstSwipeBackFragment newInstance() {
-
+        L.i("app中  进入firstSwipeBackFragment的 newInstance()");
         Bundle args = new Bundle();
 
         FirstSwipeBackFragment fragment = new FirstSwipeBackFragment();
@@ -31,6 +33,7 @@ public class FirstSwipeBackFragment extends BaseSwipeBackFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_swipe_back_first, container, false);
+        L.i("app中  进入firstSwipeBackFragment的 onCreateView()");
 
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         mToolbar.setTitle("SwipeBackActivity的Fragment");
@@ -47,6 +50,5 @@ public class FirstSwipeBackFragment extends BaseSwipeBackFragment {
 
         return attachToSwipeBack(view);
     }
-
 
 }

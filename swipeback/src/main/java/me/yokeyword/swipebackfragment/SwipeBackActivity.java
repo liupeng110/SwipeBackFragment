@@ -21,18 +21,21 @@ public class SwipeBackActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+      L.i("app中  进入baseActivity的onCreate()");
         onActivityCreate();
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        L.i("app中  进入baseActivity的 onPostCreate()");
+
         mSwipeBackLayout.attachToActivity(this);
-    }
+    }//activity 彻底跑起来
 
     @Override
     public View findViewById(int id) {
+        L.i("app中  进入baseActivity的 findViewById()");
         View view = super.findViewById(id);
         if (view == null && mSwipeBackLayout != null) {
             return mSwipeBackLayout.findViewById(id);
@@ -40,7 +43,8 @@ public class SwipeBackActivity extends AppCompatActivity {
         return view;
     }
 
-    void onActivityCreate() {
+  public  void onActivityCreate() {
+      L.i("app中  进入baseActivity的 onActivityCreate()");
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getWindow().getDecorView().setBackgroundDrawable(null);
         mSwipeBackLayout = new SwipeBackLayout(this);
